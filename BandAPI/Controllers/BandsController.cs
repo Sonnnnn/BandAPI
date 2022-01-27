@@ -15,12 +15,16 @@ namespace BandAPI.Controllers
     [Route("api/bands")]
     public class BandsController : ControllerBase
     {
-        private readonly IBandAlbumRepository _bandAlbumRepository;
+        //private readonly IBandAlbumRepository _bandAlbumRepository;
+        private readonly IBandRepository _bandRepository;
         private readonly IMapper _mapper;
-        public BandsController(IBandAlbumRepository bandAlbumRepository, IMapper mapper)
+        //public BandsController(IBandAlbumRepository bandAlbumRepository, IMapper mapper)
+        public BandsController(IBandRepository bandRepository, IMapper mapper)
         {
-            _bandAlbumRepository = bandAlbumRepository ??
-                throw new ArgumentNullException(nameof(bandAlbumRepository));
+            //_bandAlbumRepository = bandAlbumRepository ??
+            _bandRepository = bandRepository ??
+            //    throw new ArgumentNullException(nameof(bandAlbumRepository));
+            throw new ArgumentNullException(nameof(bandRepository));
             _mapper = mapper ??
              throw new ArgumentNullException(nameof(mapper));
         }
@@ -31,7 +35,7 @@ namespace BandAPI.Controllers
         {
             //throw new Exception("testing exceptions");
             //var bandsFromRepo = _bandAlbumRepository.GetBands(mainGenre,searchQuery);
-            var bandsFromRepo = _bandAlbumRepository.GetBands(bandsResourceParameters);
+            var bandsFromRepo = _bandRepository.GetBands(bandsResourceParameters);
             return Ok(_mapper.Map < IEnumerable < BandDto >> (bandsFromRepo));
             //return new JsonResult(bandsFromRepo);
             //return Ok(bandsFromRepo);
@@ -57,7 +61,8 @@ namespace BandAPI.Controllers
 
             //var bandFromRepo = _bandAlbumRepository.GetBand(bandId);
             //return new JsonResult(bandFromRepo);
-            var bandFromRepo = _bandAlbumRepository.GetBand(bandId);
+            //var bandFromRepo = _bandAlbumRepository.GetBand(bandId);
+            var bandFromRepo = _bandRepository.GetBand(bandId);
             if (bandFromRepo == null)
                 return NotFound();
             return Ok(bandFromRepo);
@@ -67,8 +72,10 @@ namespace BandAPI.Controllers
         public ActionResult<BandDto> CreateBand([FromBody] BandForCreatingDto band)
         {
             var bandEntity = _mapper.Map<Entities.Band>(band);
-            _bandAlbumRepository.AddBand(bandEntity);
-            _bandAlbumRepository.Save();
+            //_bandAlbumRepository.AddBand(bandEntity);
+            _bandRepository.AddBand(bandEntity);
+            //_bandAlbumRepository.Save();
+            _bandRepository.Save();
 
             var bandToReturn = _mapper.Map<BandDto>(bandEntity);
 
@@ -84,12 +91,15 @@ namespace BandAPI.Controllers
         [HttpDelete("{bandId}")]
         public ActionResult DeleteBand(Guid bandId)
         {
-            var bandFromRepo = _bandAlbumRepository.GetBand(bandId);
+            //var bandFromRepo = _bandAlbumRepository.GetBand(bandId);
+            var bandFromRepo = _bandRepository.GetBand(bandId);
             if (bandFromRepo == null)
                 return NotFound();
 
-            _bandAlbumRepository.DeleteBand(bandFromRepo);
-            _bandAlbumRepository.Save();
+            //_bandAlbumRepository.DeleteBand(bandFromRepo);
+            _bandRepository.DeleteBand(bandFromRepo);
+            //_bandAlbumRepository.Save();
+            _bandRepository.DeleteBand(bandFromRepo);
 
             return NoContent();
         }

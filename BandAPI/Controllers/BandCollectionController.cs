@@ -14,13 +14,16 @@ namespace BandAPI.Controllers
     [Route("api/bandcollections")]
     public class BandCollectionsController : ControllerBase
     {
-        private readonly IBandAlbumRepository _bandAlbumRepository;
+        private readonly IBandRepository _bandRepository;
+        private readonly IAlbumRepository _albumRepository;
         private readonly IMapper _mapper;
 
-        public BandCollectionsController(IBandAlbumRepository bandAlbumRepository, IMapper mapper)
+        public BandCollectionsController(IBandRepository bandRepository,IAlbumRepository albumRepository, IMapper mapper)
         {
-            _bandAlbumRepository = bandAlbumRepository ??
-                throw new ArgumentNullException(nameof(bandAlbumRepository));
+            _bandRepository = bandRepository ??
+                throw new ArgumentNullException(nameof(bandRepository));
+            _albumRepository = albumRepository ??
+                throw new ArgumentNullException(nameof(albumRepository));
             _mapper = mapper ??
                 throw new ArgumentNullException(nameof(mapper));
         }
@@ -31,7 +34,7 @@ namespace BandAPI.Controllers
             if (ids == null)
                 return BadRequest();
 
-            var bandEntities = _bandAlbumRepository.GetBands(ids);
+            var bandEntities = _bandRepository.GetBands(ids);
 
             if (ids.Count() != bandEntities.Count())
                 return NotFound();
@@ -48,10 +51,10 @@ namespace BandAPI.Controllers
 
             foreach (var band in bandEntities)
             {
-                _bandAlbumRepository.AddBand(band);
+                _bandRepository.AddBand(band);
             }
 
-            _bandAlbumRepository.Save();
+            _bandRepository.Save();
             var bandCollectionToReturn = _mapper.Map<IEnumerable<BandDto>>(bandEntities);
             var IdsString = string.Join(",", bandCollectionToReturn.Select(a => a.Id));
 

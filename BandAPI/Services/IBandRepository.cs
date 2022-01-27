@@ -7,14 +7,8 @@ using System.Threading.Tasks;
 
 namespace BandAPI.Services
 {
-    public interface IBandAlbumRepository
+    public interface IBandRepository
     {
-        IEnumerable<Album> GetAlbums(Guid bandId);
-        Album GetAlbum(Guid bandId, Guid albumId);
-        void AddAlbum(Guid bandId, Album album);
-        void UpdateAlbum(Album album);
-        void DeleteAlbum(Album album);
-
         IEnumerable<Band> GetBands();
         Band GetBand(Guid bandId);
         IEnumerable<Band> GetBands(IEnumerable<Guid> bandIds);
@@ -25,7 +19,6 @@ namespace BandAPI.Services
         void DeleteBand(Band band);
 
         bool BandExists(Guid BandId);
-        bool AlbumExists(Guid albumId);
         bool Save();
     }
 }

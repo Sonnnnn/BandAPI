@@ -14,7 +14,6 @@ namespace BandAPI.Profiles
             CreateMap<Entities.Album, Models.AlbumsDto>().ReverseMap();
             CreateMap<AlbumForCreatingDto, Entities.Album>();
             CreateMap<Models.AlbumForUpdatingDto, Entities.Album>().ReverseMap();
-
         }
     }
 }
